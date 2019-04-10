@@ -1,13 +1,13 @@
-module rndm_gen (input clock, input reset, output reg [3:0] rnd);
+module rndm_gen (input clock, input reset, output reg [7:0] rnd);
 
 wire feedback;
-wire [3:0] lfsr_next;
+wire [7:0] lfsr_next;
 
 //An LFSR cannot have an all 0 state, thus reset to non-zero value
 reg [26:0] delay;
-reg [3:0] reset_value = 13;
-reg [3:0] lfsr;
-reg [2:0] count;
+reg [7:0] reset_value = 13;
+reg [7:0] lfsr;
+reg [3:0] count;
 
 always @ (posedge clock)
 begin
@@ -17,8 +17,8 @@ begin
 		if (reset)
 		begin
 			lfsr <= reset_value; 
-			count <= 3'h7;
-			rnd <= 0;
+			count <= 4'hF;
+			rnd <= 13;
 		end
 		else
 		begin
@@ -26,7 +26,7 @@ begin
 			rnd <= lfsr;
 			count <= count + 1;
 			// a new random value is ready
-			if (count == 3'd7)
+			if (count == 4'd15)
 			begin 
 				count <= 0;
 			//rnd <= lfsr; //assign the lfsr number to output after 10 shifts 
@@ -36,7 +36,7 @@ begin
 end
 
 // X4+x3
-assign feedback = lfsr[3] ^ lfsr[2]; 
-assign lfsr_next = {lfsr[2:0], feedback};
+	assign feedback = lfsr[7] ^lfsr[5] ^lfsr[4] ^ lfsr[3]; 
+assign lfsr_next = {lfsr[6:0], feedback};
 
 endmodule
