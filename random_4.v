@@ -25,18 +25,16 @@ begin
 			lfsr <= lfsr_next;
 			rnd <= lfsr;
 			count <= count + 1;
-			// a new random value is ready
 			if (count == 4'd15)
 			begin 
 				count <= 0;
-			//rnd <= lfsr; //assign the lfsr number to output after 10 shifts 
 			end
 		end
 	end
 end
 
 // X4+x3
-	assign feedback = lfsr[7] ^lfsr[5] ^lfsr[4] ^ lfsr[3]; 
+assign feedback = lfsr[7] ^lfsr[5] ^lfsr[4] ^ lfsr[3]; 
 assign lfsr_next = {lfsr[6:0], feedback};
 
 endmodule
