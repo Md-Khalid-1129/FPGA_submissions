@@ -17,27 +17,26 @@
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
-int number_to_display = 0;
+const int rs = 1, en = 0, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+int number_to_display;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 void setup() {
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
-  
+
+  lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("hello, world!");
-  delay(500);
-  lcd.setCursor(0,1);
 }
 
 void loop() {
-  display_on_lcd(number_to_display);
-  number_to_display++;
-  delay(500);
+   number_to_display = get_number();
+   lcd.clear();
+   lcd.setCursor(0,0);
+   lcd.print(number_to_display);
+   delay(100);
 }
 
-void display_on_lcd(int num) {
-  lcd.setCursor(0,1);
-  lcd.print(num);
+int get_number() {
+  return (1*digitalRead(6) + 2*digitalRead(7) + 4*digitalRead(8) + 8*digitalRead(9) + 16*digitalRead(10) + 32*digitalRead(11) + 64*digitalRead(12) + 128*digitalRead(13));
 }
