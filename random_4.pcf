@@ -1,0 +1,20 @@
+set_io clk R9
+set_io reset B4
+
+set_io reset_value[0] N6
+set_io reset_value[1] L7
+set_io reset_value[2] G5
+set_io reset_value[3] L9
+set_io reset_value[4] R10
+set_io reset_value[5] T11
+set_io reset_value[6] T14
+set_io reset_value[7] T15
+
+set_io rnd[0] B11 
+set_io rnd[1] B10 
+set_io rnd[2] B9
+set_io rnd[3] D8
+set_io rnd[4] B5
+set_io rnd[5] B3
+set_io rnd[6] B6
+set_io rnd[7] B7
