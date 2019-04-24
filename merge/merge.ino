@@ -22,9 +22,7 @@
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
-const int rs = 31, en = 30, d4 = 5, d5 = 4, d6 = 3, d7 = 2, reset_pin = 27;
-int number_to_display = 0, input = 0, num = 0;
-int counter[4] = {0,0,0,0};
+const int rs = 31, en = 30, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 
@@ -40,6 +38,9 @@ byte rowPins[ROWS] = {45, 49, 51, 39};
 byte colPins[COLS] = {47, 43, 41};
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
 
+
+int number_to_display = 0, input = 0, num = 0, reset_pin = 27;
+int counter[4] = {0,0,0,0};
 
 void setup() {
   // set up the LCD's number of columns and rows:
@@ -57,14 +58,19 @@ void setup() {
   pinMode(20, OUTPUT);
   pinMode(21, OUTPUT);
   pinMode(22, OUTPUT);
+  
+  // set reset pin to low
   digitalWrite(reset_pin, LOW);
 }
 
 
 void loop() {
    lcd.clear();
+   
+   // get input from keypad
    input = get_input();
 
+   // if valid input
    if (input > 0) {
       counter[0] = 0;
       counter[1] = 0;
@@ -73,8 +79,10 @@ void loop() {
       seed(input);
    }
    else {
+      // get number from FPGA
       number_to_display = get_number();
       
+      // display counter stats
       lcd.setCursor(0, 0);
       lcd.print(counter[0]);
       lcd.print('!');
@@ -84,7 +92,7 @@ void loop() {
       lcd.print('!');
       lcd.print(counter[3]);
       
-      
+      // display generated random number
       lcd.setCursor(0, 1);
       lcd.print(number_to_display);
       
@@ -92,7 +100,7 @@ void loop() {
    }
 }
 
-
+// gets input from FPGA
 int get_number() {
   int sig = digitalRead(34) + 2*digitalRead(35);
   counter[sig]++;
@@ -110,6 +118,7 @@ int get_number() {
 }
 
 
+// gets input from Keypad
 int get_num() {
   char customKey = customKeypad.getKey();
   
@@ -174,7 +183,7 @@ int get_input() {
     return CANCEL;
 }
 
-
+// send seed value to FPGA
 void seed(int val) {
     digitalWrite(14, val%2);
     val = (val) >> 1;
