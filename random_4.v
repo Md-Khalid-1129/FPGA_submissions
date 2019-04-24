@@ -1,10 +1,10 @@
 module rndm_gen (input wire clk, input [7:0] reset_value, input wire reset, output reg [9:0] rnd, output reg [1:0] sig);
 
 wire feedback;
-wire [7:0] lfsr_next;
+wire [9:0] lfsr_next;
 
 reg [26:0] time_value = 0;
-reg [7:0] lfsr = 13;
+reg [9:0] lfsr = 13;
 reg [9:0] count;
 reg [9:0] half = 511;
 reg [9:0] one_fourth = 255;
@@ -19,7 +19,7 @@ begin
 		if (reset)
 		begin
 			lfsr = reset_value; 
-			count = 0;
+			count = 1;
 			rnd = reset_value;
 		end
 		else
@@ -45,10 +45,7 @@ begin
 		    end
 			
 			count = count + 1;
-			if (count == 4'd15)
-			begin 
-				count = 0;
-			end
+			
 		end
 	end
 end
