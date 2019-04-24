@@ -15,14 +15,16 @@
 // include the library code:
 #include <LiquidCrystal.h>
 #include <Keypad.h>
+
 #define SUBMIT -1
 #define NOTHING -2
 #define CANCEL -3
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
-const int rs = 31, en = 30, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+const int rs = 31, en = 30, d4 = 5, d5 = 4, d6 = 3, d7 = 2, reset_pin = 27;
 int number_to_display = 0, input = 0, num = 0;
+int counter[4] = {0,0,0,0};
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 
@@ -54,8 +56,7 @@ void setup() {
   pinMode(20, OUTPUT);
   pinMode(21, OUTPUT);
   pinMode(22, OUTPUT);
-
-  digitalWrite(22, LOW);
+  digitalWrite(reset_pin, LOW);
 }
 
 
@@ -63,20 +64,45 @@ void loop() {
    input = get_input();
 
    if (input > 0) {
-      give_signal(input);
+      seed(input);
    }
    else {
-      number_to_display = get_number();
       lcd.clear();
+      number_to_display = get_number();
+      
+
+      lcd.setCursor(0, 0);
+      lcd.print(counter[0]);
+      lcd.print('!');
+      lcd.print(counter[1]);
+      lcd.print('!');
+      lcd.print(counter[2]);
+      lcd.print('!');
+      lcd.print(counter[3]);
+      
+      
       lcd.setCursor(0, 1);
       lcd.print(number_to_display);
+      
       delay(1000);
    }
 }
 
 
 int get_number() {
-  return (1*digitalRead(6) + 2*digitalRead(7) + 4*digitalRead(8) + 8*digitalRead(9) + 16*digitalRead(10) + 32*digitalRead(11) + 64*digitalRead(12) + 128*digitalRead(13));
+  int sig = digitalRead(34) + 2*digitalRead(35);
+  counter[sig]++;
+  
+  return (1*digitalRead(6) +
+          2*digitalRead(7) + 
+          4*digitalRead(8) + 
+          8*digitalRead(9) +
+          16*digitalRead(10) +
+          32*digitalRead(11) +
+          64*digitalRead(12) +
+          128*digitalRead(13) +
+          256*digitalRead(24) +
+          512*digitalRead(25));
 }
 
 
@@ -142,7 +168,7 @@ int get_input() {
 }
 
 
-void give_signal(int val) {
+void seed(int val) {
     digitalWrite(14, val%2);
     val = (val) >> 1;
     digitalWrite(15, val%2);
@@ -159,7 +185,7 @@ void give_signal(int val) {
     val = (val) >> 1;
     digitalWrite(21, val%2);
 
-    digitalWrite(22, 1);
+    digitalWrite(reset_pin, 1);
     delay(1000);
-    digitalWrite(22, 0);
+    digitalWrite(reset_pin, 0);
 }
