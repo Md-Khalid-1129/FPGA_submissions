@@ -18,3 +18,8 @@ set_io rnd[4] B5
 set_io rnd[5] B3
 set_io rnd[6] B6
 set_io rnd[7] B7
+set_io rnd[8] A5
+set_io rnd[9] A2
+
+set_io sig[0] M8
+set_io sig[1] N7
