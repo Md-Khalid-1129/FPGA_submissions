@@ -47,6 +47,7 @@ void setup() {
   lcd.clear();
   lcd.setCursor(0,0);
 
+  // pins for sending data to FPGA
   pinMode(14, OUTPUT);
   pinMode(15, OUTPUT);
   pinMode(16, OUTPUT);
@@ -61,16 +62,19 @@ void setup() {
 
 
 void loop() {
+   lcd.clear();
    input = get_input();
 
    if (input > 0) {
+      counter[0] = 0;
+      counter[1] = 0;
+      counter[2] = 0;
+      counter[3] = 0;
       seed(input);
    }
    else {
-      lcd.clear();
       number_to_display = get_number();
       
-
       lcd.setCursor(0, 0);
       lcd.print(counter[0]);
       lcd.print('!');
@@ -142,7 +146,7 @@ int get_num() {
 
 int get_input() {
     num = get_num();
-    if (num == NOTHING) {
+    if (num <= 0) {
         return NOTHING;
     }
     
@@ -151,9 +155,12 @@ int get_input() {
     lcd.setCursor(0, 0);
     lcd.print("INPUT:");
     while (num == NOTHING || num >= 0) {
-        if (num != NOTHING) {
-            input = 10*input + num;
-            lcd.print(num);
+        if (num != NOTHING) {            
+            // max seed is 255
+            if (10*input + num <= 255) {
+               input = 10*input + num;
+               lcd.print(num);
+            }
         }
         
         num = get_num();
